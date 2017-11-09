@@ -1,8 +1,4 @@
 
-// $(".carousel").carousel({
-// 	interval: 2000
-// });
-
   // Initialize Firebase
 var config = {
     apiKey: "AIzaSyAUj7AnEW2bBR3Qn7KOOKB-2ilJiMEBnms",
@@ -17,57 +13,28 @@ firebase.initializeApp(config);
 
 var database = firebase.database();
 
+
+
     var name;
-	var destination;
-	var freq;
-	var time; 
-	var remain;
-	var currentTime;
-	var diff;
-	var timeConverted;
-	var timeLeft;
-	var nextTrain;
+    var destination;
+    var time;
+    var freq; 
 
-	function timeDiff(time) {
-		
-		timeConverted = moment(time, "hh:mm").subtract(1, "years");
-		
-		currentTime = moment();
-		currentTime = moment(currentTime).format("hh:mm");
-
-		diff = moment().diff(moment(timeConverted), "minutes");
-
-		remain = diff % freq;
-
-		timeLeft = freq - remain;
-
-		nextTrain = (moment().add(timeLeft, "minutes"));
-
-	}
-	
 	$("#submit-btn").click(function (event) {
 		event.preventDefault();
 
 		name = $('#name').val();
 		destination = $('#destination').val();
-		freq = $('#freq').val();
 		time = $('#time').val();
-		
-		pushData(name, destination, freq, time);
-	});
+		freq = $('#freq').val();
 
-	function pushData (name, destination, freq, time){
-
-		nextTrain= JSON.stringify((timeDiff(time)));
 		database.ref().push({
 			name: name,
 			destination: destination,
-			freq: freq,
-			time: time,	
-				
-		});
-
-	}
+			time: time,
+			freq: freq
+        });
+    });
 
 	database.ref().on("child_added", function (snapshot) {
 
@@ -75,9 +42,8 @@ var database = firebase.database();
 
 		newRow.append('<td>' + snapshot.val().name + '</td>');
 		newRow.append('<td>' + snapshot.val().destination + '</td>');
-		newRow.append('<td>' + snapshot.val().freq + '</td>');
 		newRow.append('<td>' + snapshot.val().time + '</td>');
-		newRow.append('<td>' + (moment().add(timeLeft, "minutes")) + '</td>')
+		newRow.append('<td>' + snapshot.val().freq + '</td>');
 		
 		$('#insert-data').append(newRow);
 	}); 
