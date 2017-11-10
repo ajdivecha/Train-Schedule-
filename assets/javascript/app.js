@@ -33,6 +33,7 @@ var database = firebase.database();
 		timeConverted = moment(time, "hh:mm").subtract(1, "years");
 		
 		currentTime = moment();
+		
 		currentTime = moment(currentTime).format("hh:mm");
 
 		diff = moment().diff(moment(timeConverted), "minutes");
@@ -41,7 +42,7 @@ var database = firebase.database();
 
 		timeLeft = freq - remain;
 
-		nextTrain = (moment().add(timeLeft, "minutes"));
+		return timeLeft;
 
 	}
 	
@@ -52,13 +53,13 @@ var database = firebase.database();
 		destination = $('#destination').val();
 		freq = $('#freq').val();
 		time = $('#time').val();
+		nextTrain = (timeDiff(time));
 		
 		pushData(name, destination, freq, time);
 	});
 
 	function pushData (name, destination, freq, time){
 
-		nextTrain= JSON.stringify((timeDiff(time)));
 		database.ref().push({
 			name: name,
 			destination: destination,
@@ -77,7 +78,7 @@ var database = firebase.database();
 		newRow.append('<td>' + snapshot.val().destination + '</td>');
 		newRow.append('<td>' + snapshot.val().freq + '</td>');
 		newRow.append('<td>' + snapshot.val().time + '</td>');
-		newRow.append('<td>' + (moment().add(timeLeft, "minutes")) + '</td>')
+		newRow.append('<td>' + nextTrain + '</td>')
 		
 		$('#insert-data').append(newRow);
 	}); 
